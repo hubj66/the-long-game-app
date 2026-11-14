@@ -1,6 +1,6 @@
 {
   "name": "The Long Game",
-  "version": "0.1.44",
+  "version": "0.1.46",
   "slug": "the_long_game",
   "description": "Mastery-based investing education for families — parent and child application.",
   "url": "https://github.com/hubj66/the-long-game",
@@ -34,6 +34,8 @@
     "factory_module": "str?",
     "database_url": "password",
     "enable_demo_financial": "bool?",
-    "skip_migrations": "bool?"
+    "skip_migrations": "bool?",
+    "reset_parent_sign_in_name": "str?",
+    "reset_parent_password": "password?"
   }
 }

@@ -2,6 +2,36 @@
 
 ## Unreleased
 
+## 0.1.46 - 2026-11-14
+
+- **Lessons C09-C50 need the right answer too.** Each of the 34 lesson chapters after
+  Stage 1 now offers the right answer, a common mistake and *ask for help*; only the right
+  answer completes it (definition version 2). Lessons already opened or completed keep
+  their version. Calculation and market chapters are unchanged.
+- **Children make their own saving goals.** *My money* has a *Make your own goal* form:
+  a name and whole francs from 1 to 10 000, up to five goals per child. The goal from
+  lesson C05 stays; C05 now says that own goals can be added.
+- **Shorter Stage 1 lesson titles** for ages 6-8, for example *Money and Prices* instead
+  of *Money, Prices and Value*. The curriculum keeps the full titles.
+- **Age group check for each new year.** *Plan next year* shows the child's age group
+  and asks whether it is still right; a change is saved with the new year. Nothing else
+  about the child changes, and no birth date is stored.
+- **Reset a forgotten parent password in Home Assistant.** Two new optional app
+  settings, `reset_parent_sign_in_name` and `reset_parent_password`, set a new password
+  for a parent account at the next start. Only Home Assistant administrators can change
+  app settings. The password is never logged; the log says whether the reset was applied
+  and reminds you to remove the settings. Child accounts are not affected.
+
+## 0.1.45 - 2026-11-14
+
+- **Start-up messages are visible again.** Running the database migrations at start
+  switched off the app's other log messages. Since 0.1.43 this also hid the
+  `Cannot start:` line that names a database problem, and the log never showed
+  `Application startup complete.`, which the installation guide tells you to look for.
+  Both now appear.
+- Documentation: history notes that earlier version bumps had changed by mistake show
+  their true versions again (archive since 0.1.38, editor code removed after 0.1.42).
+
 ## 0.1.44 - 2026-11-14
 
 - **Add a child by name.** The *Add child* form asks only for a first name or nickname

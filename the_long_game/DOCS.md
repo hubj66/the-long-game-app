@@ -197,33 +197,31 @@ Signing up is only offered while the database has no parent account. If you
 already had one, the URL points to a new or empty database: stop the app and
 check the database name in the URL. Do not create a second account.
 
-### I forgot the parent ID or password
+### I forgot the parent sign-in name or password
 
-In the Query Tool of The Long Game's database:
+**Sign-in name.** In pgAdmin, in the Query Tool of The Long Game's database:
 
 ```sql
 SELECT principal_id FROM application_parent_credentials;
 ```
 
-`principal_id` is the stored parent ID; the sign-in name is the part after
-`principal_` (`principal_alex` signs in as `alex`). A password cannot be read back.
-To set a temporary one, create its hash on a computer with the project checked
-out:
+The sign-in name is the part after `principal_` (`principal_alex` signs in as
+`alex`).
 
-```sh
-uv run python -c "from the_long_game_app.authentication import generate_parent_credential_hash as h; print(h(input('Temporary password: ')))"
-```
+**Password.** Only a Home Assistant administrator can do this:
 
-and store it:
+1. Open **Settings > Apps > The Long Game > Configuration**.
+2. Turn on **Show unused optional configuration options** if the two reset
+   options are hidden.
+3. Enter the sign-in name in `reset_parent_sign_in_name` and a new password
+   (at least 8 characters) in `reset_parent_password`. Choose **Save**.
+4. Restart the app. The log shows `The parent password was reset.` The
+   password itself is never shown in the log.
+5. **Remove both reset options again and save.** While they are set, every
+   start resets the password again.
+6. Sign in with the new password.
 
-```sql
-UPDATE application_parent_credentials
-SET password_hash = 'PASTE_THE_HASH'
-WHERE principal_id = 'YOUR_PARENT_ID';
-```
-
-Sign in with the temporary password and change it at once under
-**Change password**.
+Children's passwords are reset by a parent on the **Manage** page.
 
 ## Privacy and safety
 
