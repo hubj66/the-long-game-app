@@ -1,0 +1,39 @@
+{
+  "name": "The Long Game",
+  "version": "0.1.42",
+  "slug": "the_long_game",
+  "description": "Mastery-based investing education for families — parent and child application.",
+  "url": "https://github.com/hubj66/the-long-game",
+  "image": "ghcr.io/hubj66/the-long-game",
+  "stage": "experimental",
+  "arch": [
+    "aarch64",
+    "amd64"
+  ],
+  "startup": "application",
+  "boot": "auto",
+  "init": false,
+  "ingress": true,
+  "ingress_port": 8099,
+  "ingress_entry": "parent/login",
+  "panel_icon": "mdi:school",
+  "panel_title": "The Long Game",
+  "homeassistant": "2024.1.0",
+  "map": [],
+  "options": {
+    "log_level": "info",
+    "workers": 1,
+    "factory_module": "",
+    "database_url": "",
+    "enable_demo_financial": false,
+    "skip_migrations": false
+  },
+  "schema": {
+    "log_level": "list(debug|info|warning|error|critical)?",
+    "workers": "int?",
+    "factory_module": "str?",
+    "database_url": "password",
+    "enable_demo_financial": "bool?",
+    "skip_migrations": "bool?"
+  }
+}
