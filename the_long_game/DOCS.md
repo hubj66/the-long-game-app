@@ -1,61 +1,240 @@
 # Installation
 
-This guide installs The Long Game as a Home Assistant app. You do not need Git
-or a development environment for the first way described here.
+This guide installs The Long Game as a Home Assistant app. You need no Git,
+no Python and no computer setup: everything happens in Home Assistant. It takes
+about 30 minutes.
 
 > **Status: early test release, not ready for family use yet.** The Long Game
-> is in private development. Use it with pretend money only. Installing from the app
-> repository (way A) works from the first public release; it has not been
-> validated on a real Home Assistant yet. Until then, use the local bundle
-> (way B), which is how the app is installed and tested today.
+> is in private development. Use it with pretend money only. Home Assistant
+> marks the app as *experimental* and shows a warning before you install it.
+
+| Step | What you do | Where |
+|---|---|---|
+| 1 | Install PostgreSQL and pgAdmin | Home Assistant app store |
+| 2 | Create a database user and a database | pgAdmin |
+| 3 | Install The Long Game | Home Assistant app store |
+| 4 | Enter the database URL and start | The Long Game app page |
+| 5 | Create the parent account | The Long Game |
+| 6 | Add your child and the first year | The Long Game |
 
 ## What you need
 
 - Home Assistant OS or Supervised, on `aarch64` (for example Home Assistant
   Yellow) or `amd64`.
-- A PostgreSQL database, version 15 or later, that Home Assistant can reach.
 - A Home Assistant backup made before you start.
+- A password manager for the passwords and the database URL you create.
 
-## 1. Install PostgreSQL
+## 1. Install PostgreSQL and pgAdmin
 
-Install a PostgreSQL app in Home Assistant (there are community apps), or use
-a PostgreSQL server you already run. Then create:
+You can skip this step if you already run PostgreSQL 15 or later.
 
-- an empty database, for example `the_long_game`;
-- a user with a strong password that owns this database.
+1. In Home Assistant open **Settings > Apps > App store**, open the menu (⋮, top
+   right) and choose **Repositories**.
+2. Add `https://github.com/alexbelgium/hassio-addons` and close the dialog.
+3. Install **Postgres 17**. On its **Configuration** tab set a strong
+   `POSTGRES_PASSWORD`, save, and start the app. This is the administrator
+   password; keep it in your password manager.
+4. Install **pgAdmin4** from the same repository, start it and turn on
+   **Show in sidebar**.
+
+## 2. Create the database user and the database
+
+### Connect pgAdmin to PostgreSQL
+
+The first time only:
+
+1. Open **pgAdmin4** from the sidebar.
+2. Right-click **Servers** and choose **Register > Server**.
+3. **General** tab: Name `Home Assistant`.
+4. **Connection** tab:
+
+   | Field | Value |
+   |---|---|
+   | Host name/address | `db21ed7f-postgres-latest` |
+   | Port | `5432` |
+   | Maintenance database | `postgres` |
+   | Username | `postgres` |
+   | Password | the `POSTGRES_PASSWORD` from step 1 |
+   | Save password? | on |
+
+5. Choose **Save**. The server appears under **Servers**.
+
+### Create the user and the database
+
+1. Open **Servers > Home Assistant > Databases**, right-click the database
+   **postgres** and choose **Query Tool**.
+2. Paste the following, replace `ChooseAStrongPassword1` with your own password
+   (letters and numbers only, so the URL needs no special characters), and
+   press **F5**:
+
+   ```sql
+   CREATE ROLE tlg_user WITH LOGIN PASSWORD 'ChooseAStrongPassword1';
+   CREATE DATABASE the_long_game OWNER tlg_user;
+   ```
+
+3. The answer should be `CREATE DATABASE`.
 
 The Long Game creates and updates its own tables when it starts. Do not share
-the database with another application.
+this database with another application.
 
-Write down the database URL. It has this form:
+### Build the database URL
 
 ```text
 postgresql://USER:PASSWORD@HOST:5432/DATABASE
 ```
 
-`HOST` is the host name of the PostgreSQL app as shown on its information page,
-or the address of your own server. If the password contains characters such as
-`@`, `:` or `/`, they must be percent-encoded.
+| Part | Value |
+|---|---|
+| `USER` | `tlg_user` |
+| `PASSWORD` | the password from the step above |
+| `HOST` | the host name of your PostgreSQL app. For **Postgres 17** (alexbelgium) it is `db21ed7f-postgres-latest`; other apps show theirs on their **Info** page. |
+| `DATABASE` | `the_long_game` |
 
-## 2. Install The Long Game
+Example:
 
-### Way A: from the app repository
+```text
+postgresql://tlg_user:ChooseAStrongPassword1@db21ed7f-postgres-latest:5432/the_long_game
+```
 
-1. In Home Assistant open **Settings > Apps > App store**.
-2. Open the menu (top right), choose **Repositories** and add the address of
-   The Long Game app repository:
+**Keep this URL in your password manager.** Home Assistant deletes the app's
+settings when the app is uninstalled; the data in PostgreSQL stays.
+
+## 3. Install The Long Game
+
+1. In Home Assistant open **Settings > Apps > App store**, open the menu (⋮)
+   and choose **Repositories**.
+2. Add `https://github.com/hubj66/the-long-game-app` and close the dialog.
+3. Find **The Long Game** in the store. If it does not appear, open the menu
+   and choose **Check for updates**.
+4. Choose **Install**. Home Assistant warns that the app is *experimental*;
+   confirm to continue. The download takes a few minutes.
+5. On the app's **Info** tab turn on **Show in sidebar**.
+
+## 4. Enter the database URL and start
+
+1. Open the app's **Configuration** tab.
+2. Paste your URL into `database_url`. Leave every other option as it is.
+3. Choose **Save**, go to the **Info** tab and choose **Start**.
+4. Open the **Log** tab. After about half a minute the last lines are:
 
    ```text
-   https://github.com/hubj66/the-long-game-app
+   INFO __main__: Starting ASGI server on port 8099
+   INFO:     Application startup complete.
    ```
 
-3. Close the dialog, find **The Long Game** in the store and choose **Install**.
+If the log shows a line starting with `Cannot start:` instead, it names the
+cause: a wrong user or password, a database that does not exist, an unknown
+host or a database server that cannot be reached. Correct `database_url`, save
+and start again. The log never shows the URL itself.
 
-Home Assistant downloads a ready-made image. Nothing is built on your device.
+## 5. Create the parent account
 
-### Way B: as a local app from a bundle
+1. Open **The Long Game** from the sidebar.
+2. Choose **Create a parent account**. Signing up is only possible while no
+   parent account exists.
+3. Choose a short sign-in name (for example `alex`) and a password, and keep both
+   in your password manager.
 
-Use this before the first public release, or to run your own build.
+## 6. Set up inside The Long Game
+
+Everything else happens in the app:
+
+1. **Manage** page: under **Add child** enter your child's first name or a
+   nickname and the age group, then choose **Add child**. The child's card shows
+   the sign-in name the app made from it (for example `lena`). Set the child's
+   password on the same card.
+2. **Library**: add the starter library (synthetic investments and price
+   histories), or import your own histories.
+3. **Invest > Yearly cycles**: create the first year. You can start from the
+   example plan. Choose the start date, the period and the investments, then
+   publish the year.
+4. Your child opens The Long Game, chooses **Child**, and signs in with the
+   sign-in name and password. Then the child works through the chapters and
+   opens **My year**.
+
+See [yearly cycles](yearly-cycles.md) and [tool ladder](tool-ladder.md) for
+how a year and the unlocking of tools work.
+
+### Check that everything works
+
+- [ ] The app's **Info** tab shows it as running.
+- [ ] You can sign in as the parent.
+- [ ] **Manage** lists your child.
+- [ ] **Invest > Yearly cycles** shows the first year as published.
+- [ ] Your child can sign in and sees **My year** and **My chapters**.
+- [ ] The database URL, your sign-in name and both passwords are in your password manager.
+
+## Troubleshooting
+
+### I lost the database URL
+
+The host and port are known (see [Build the database URL](#build-the-database-url)).
+Find the rest in pgAdmin, in the Query Tool of the database **postgres**:
+
+```sql
+SELECT datname AS database, pg_get_userbyid(datdba) AS owner
+FROM pg_database
+WHERE NOT datistemplate
+ORDER BY 1;
+```
+
+The Long Game's database is the one whose Query Tool answers
+`SELECT version_num FROM alembic_version;` with a revision such as
+`0019_child_display_name`. Its owner is the user. A password cannot be read back;
+set a new one for that user (this changes nothing else if only The Long Game
+uses the user):
+
+```sql
+ALTER ROLE tlg_user WITH PASSWORD 'ANewStrongPassword2';
+```
+
+Never change the password of the user `postgres` if other apps such as
+Firefly III use it.
+
+### The sign-in page offers "Create a parent account"
+
+Signing up is only offered while the database has no parent account. If you
+already had one, the URL points to a new or empty database: stop the app and
+check the database name in the URL. Do not create a second account.
+
+### I forgot the parent ID or password
+
+In the Query Tool of The Long Game's database:
+
+```sql
+SELECT principal_id FROM application_parent_credentials;
+```
+
+`principal_id` is the stored parent ID; the sign-in name is the part after
+`principal_` (`principal_alex` signs in as `alex`). A password cannot be read back.
+To set a temporary one, create its hash on a computer with the project checked
+out:
+
+```sh
+uv run python -c "from the_long_game_app.authentication import generate_parent_credential_hash as h; print(h(input('Temporary password: ')))"
+```
+
+and store it:
+
+```sql
+UPDATE application_parent_credentials
+SET password_hash = 'PASTE_THE_HASH'
+WHERE principal_id = 'YOUR_PARENT_ID';
+```
+
+Sign in with the temporary password and change it at once under
+**Change password**.
+
+## Privacy and safety
+
+- The app is reached through Home Assistant ingress. Do not expose its port to
+  the internet.
+- Keep the database URL and all passwords out of YAML files, issues and logs.
+- The money in a yearly cycle is pretend money.
+
+## For developers: install from a local bundle
+
+Use this only to test your own build before it is released.
 
 1. On a computer with the repository checked out, run
    `python scripts/stage_ha_app.py`. This writes `dist/ha-app-bundle/`.
@@ -66,53 +245,8 @@ Use this before the first public release, or to run your own build.
 4. Install **The Long Game** from **Local apps**. Home Assistant builds the
    image on the device; this takes a few minutes.
 
-## 3. Enter the database URL
-
-Open the app's **Configuration** tab.
-
-| Option | What to enter |
-|---|---|
-| `database_url` | The database URL from step 1. It is stored as a password and is not shown in logs. |
-| `log_level` | Leave `info`. |
-| `workers` | Leave `1`. |
-| `enable_demo_financial` | Leave off for family use. It adds a synthetic demo portfolio. |
-| `skip_migrations` | Leave off. The app then updates its database tables at start. |
-| `factory_module` | Leave empty. |
-
-Save the configuration.
-
-## 4. Start and create the parent account
-
-1. Start the app and wait until the log shows that the server is running.
-2. Choose **Open web UI**, or use **The Long Game** in the sidebar.
-3. On the sign-in page choose **Create a parent account** and create the first
-   parent. Signing up is only possible while no parent account exists.
-
-If the page does not open, read the app's **Log** tab first. A wrong database
-URL is the most common cause.
-
-## 5. Set up inside The Long Game
-
-Everything else happens in the app:
-
-1. **Manage** page: add your child and set the child's password.
-2. **Library**: add the starter library (synthetic investments and price
-   histories), or import your own histories.
-3. **Invest > Yearly cycles**: create the first year. You can start from the
-   example plan. Choose the start date, the period and the investments, then
-   publish the year.
-4. The child signs in on the child sign-in page, works through the chapters and
-   opens **My year**.
-
-See [yearly cycles](yearly-cycles.md) and [tool ladder](tool-ladder.md) for
-how a year and the unlocking of tools work.
-
-## Privacy and safety
-
-- The app is reached through Home Assistant ingress. Do not expose its port to
-  the internet.
-- Keep the database URL and all passwords out of YAML files, issues and logs.
-- The money in a yearly cycle is pretend money.
+The local app and the app from the repository are two different apps: never run
+both against the same database.
 
 ## Next
 

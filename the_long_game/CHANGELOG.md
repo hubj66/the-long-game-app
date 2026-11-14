@@ -2,6 +2,40 @@
 
 ## Unreleased
 
+## 0.1.44 - 2026-11-14
+
+- **Add a child by name.** The *Add child* form asks only for a first name or nickname
+  and the age group. The app creates the sign-in name from it (`Lena` -> `lena`,
+  `Zoë Müller` -> `zoe_muller`, `lena_2` when the name is taken) and never reuses an
+  account that already exists. Participant ID and principal ID are no longer typed.
+- **Children are shown by name** in Manage, the overview, approvals, activity and
+  mastery, instead of "Child 1". Children added earlier keep "Child 1" until you give
+  them a name on their card; renaming never changes the sign-in name.
+- **Short sign-in names.** Children sign in with `lena` and parents with `alex`; the
+  `principal_` prefix is no longer needed (it still works). The password check is
+  unchanged.
+- Database migration `0019_child_display_name`: one optional column for the child's
+  name (1-40 characters). No data changes on upgrade.
+- Installation guide rewritten as six steps, all inside Home Assistant: install
+  PostgreSQL and pgAdmin, connect pgAdmin, create the database, install from the app
+  repository (experimental warning, *Show in sidebar*), start with the exact log lines to
+  look for, and a final checklist. Installing from a local bundle moved to a developer
+  section.
+
+## 0.1.43 - 2026-11-14
+
+- **The log says why the app cannot start.** When the database cannot be used, the
+  app stopped without a reason. The log now shows one line starting with
+  `Cannot start:` that names the cause (wrong user or password, missing database,
+  unknown host, server not reachable, missing permission). The URL and the driver's
+  message are never logged.
+- Installation guide: step-by-step PostgreSQL setup in pgAdmin, how to build the
+  database URL, and troubleshooting for a lost URL, a forgotten parent ID or password,
+  and an unexpected *Create a parent account* page.
+
+
+## 0.1.42 - 2026-11-13
+
 - The app repository is https://github.com/hubj66/the-long-game-app. The app is published
   as *experimental* (an early test release, not ready for family use yet); Home Assistant
   warns before installing it.
@@ -14,8 +48,6 @@
 - Removed about 300 lines of code that could no longer be reached: the old per-chapter
   market editor page, its review panel and the scenario write path. The read-only archive
   pages are unchanged. No change for parents or children.
-
-## 0.1.42 - 2026-11-13
 
 Fixes from a review of the learning path for ages 6-8 (issue #307):
 
