@@ -2,6 +2,25 @@
 
 ## Unreleased
 
+## 0.1.48 - 2026-11-18
+
+- **Children with the same name can be told apart.** If two children in a household show the
+  same name, the parent pages add the sign-in name in brackets, for example
+  *Lena (lena)* and *Lena (lena_2)*. Unique names look as before. Only the display changes.
+
+- **Bigger, more visual pages for ages 6-8.** Chapters appear as large tiles: finished ones
+  green with a tick, the next one bigger with a Start button, locked ones grey with a lock.
+  Buttons, the progress bar and the money total are larger. Older children keep their
+  current pages. Only the look changes; nothing about data, access or lessons.
+- **One look for both views.** The parent and child pages now share one typeface, one set
+  brand mark and one set of corner shapes. Each keeps its own colours (green for parents,
+  blue for children). The child pages now show the app's name and mark in the header.
+  Nothing else changes and no data is touched.
+- Documentation: refreshed `docs/project-status.md` to 0.1.47 and the current GitHub state.
+- Documentation: recorded the owner's one-time exception for running the PostgreSQL
+  recovery check against the synthetic-only Yellow database, and the results of the
+  2026-11-18 browser and database run on the Yellow.
+
 ## 0.1.47 - 2026-11-15
 
 - CI: coverage from the unit tests and the three PostgreSQL test runs is combined before
