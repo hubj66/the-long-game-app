@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+## 0.1.47 - 2026-11-15
+
+- CI: coverage from the unit tests and the three PostgreSQL test runs is combined before
+  the threshold is enforced, so the database code counts too. The threshold stays at 86%.
+
+- **Read to me (optional).** Story lessons show a *Read to me* button that reads the
+  story, the question and the answers aloud with the device's own voice. It appears only
+  when the browser can speak; nothing is sent anywhere. Tap again to stop.
+
+- **The two archive pages are gone.** *Scenarios (archive)* and the read-only per-chapter
+  market setup were removed (about 900 lines). Their old addresses lead to *Yearly
+  cycles*. Stored data is untouched; a child without a running year still plays market
+  chapters with the setup published earlier, but that setup can no longer be viewed.
+
 ## 0.1.46 - 2026-11-14
 
 - **Lessons C09-C50 need the right answer too.** Each of the 34 lesson chapters after
